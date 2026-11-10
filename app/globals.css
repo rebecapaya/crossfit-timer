@@ -493,3 +493,63 @@ fieldset.field {
   font-size: 0.95rem;
   color: #4da3ff;
 }
+
+.setup-page {
+  min-height: 100dvh;
+  padding: 24px clamp(16px, 4vw, 48px) 48px;
+}
+
+.setup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  max-width: 1100px;
+  margin: 0 auto 32px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.setup-header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.setup-header h1 span {
+  font-weight: 400;
+  color: #888;
+}
+
+.setup {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 48px;
+  align-items: start;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.setup-form h2 {
+  margin: 0 0 20px;
+  font-size: 1.25rem;
+}
+
+.setup-share {
+  position: sticky; /* the QR stays visible while scrolling the form */
+  top: 24px;
+  padding: 24px;
+  background: #111;
+  border: 1px solid #2a2a2a;
+  border-radius: 20px;
+}
+
+@media (max-width: 800px) {
+  .setup {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .setup-share {
+    position: static;
+  }
+}

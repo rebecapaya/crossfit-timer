@@ -65,6 +65,8 @@ function buildWorkout(d: Draft): Workout | null {
   }
 }
 
+export const INITIAL_WORKOUT = buildWorkout(INITIAL_DRAFT);
+
 // error messages
 type Errors = Partial<Record<"cap" | "duration" | "interval" | "rounds", string>>;
 
