@@ -2,7 +2,7 @@
 
 A workout timer for a CrossFit box. Coaches set up the workout on a computer; the timer runs full screen on a phone.
 
-**Live:** <URL>
+**Live:** <https://crossfit-timer-beta.vercel.app>
 
 ## How it works
 
