@@ -338,3 +338,80 @@ fieldset.field {
   font-size: 0.9rem;
   color: #ff6b61;
 }
+
+.workout-form {
+  display: grid;
+  gap: 22px;
+}
+
+.field-label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #ddd;
+}
+
+.field input[type="text"]:not(.duration input):not(.input-short) {
+  width: 100%;
+}
+
+.input-short {
+  width: 96px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.optional {
+  font-weight: 400;
+  color: #777;
+}
+
+.segmented {
+  display: inline-flex;
+  padding: 4px;
+  gap: 4px;
+  background: #1a1a1a;
+  border: 1px solid #444;
+  border-radius: 12px;
+}
+
+.segmented button {
+  min-height: 40px;
+  padding: 0 18px;
+  font-weight: 700;
+  color: #aaa;
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+}
+
+.segmented button[aria-pressed="true"] {
+  color: #000;
+  background: #2ecc71;
+}
+
+.presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.presets button {
+  min-height: 36px;
+  padding: 0 14px;
+  font-size: 0.9rem;
+  color: #ddd;
+  background: transparent;
+  border: 1px solid #444;
+  border-radius: 999px;
+}
+
+.presets button:hover {
+  border-color: #888;
+}
+
+.form-hint {
+  margin: -10px 0 0;
+  font-variant-numeric: tabular-nums;
+  color: #aaa;
+}
