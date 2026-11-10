@@ -2,6 +2,9 @@ import type { Cue } from "./timeline";
 
 let ctx: AudioContext | null = null;
 
+const listeners = new Set<() => void>();
+const notify = () => listeners.forEach((listener) => listener());
+
 function getContext(): AudioContext | null {
   if (typeof window === "undefined") return null;
   if (!ctx) {
@@ -10,8 +13,18 @@ function getContext(): AudioContext | null {
       (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
     if (!Ctor) return null;
     ctx = new Ctor();
+    ctx.addEventListener("statechange", notify);
   }
   return ctx;
+}
+
+export function isAudioRunning(): boolean {
+  return ctx?.state === "running";
+}
+
+export function subscribeAudioState(onChange: () => void): () => void {
+  listeners.add(onChange);
+  return () => listeners.delete(onChange);
 }
 
 export function unlockAudio(): void {
@@ -22,13 +35,21 @@ export function unlockAudio(): void {
     try {
       nav.audioSession.type = "playback";
     } catch {
-      // Ignor errors
+      /* not supported: continue without it */
     }
+  }
+
+  if (ctx && ctx.state !== "running") {
+    const old = ctx;
+    old.removeEventListener("statechange", notify);
+    void old.close().catch(() => {});
+    ctx = null;
   }
 
   const audio = getContext();
   if (!audio) return;
   if (audio.state !== "running") void audio.resume();
+  notify();
 
   const buffer = audio.createBuffer(1, 1, 22050);
   const source = audio.createBufferSource();
