@@ -250,3 +250,9 @@ button:active {
     flex: 1;
   }
 }
+
+/* Monospace for the clock: every character has the same width */
+.timer-digits,
+.timer-round {
+  font-family: var(--font-digits), monospace;
+}
