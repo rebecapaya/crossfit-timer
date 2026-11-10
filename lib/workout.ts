@@ -1,3 +1,5 @@
+import { formatTime } from "./timeline";
+
 // types
 export type Mode = "fortime" | "amrap" | "emom";
 
@@ -114,5 +116,25 @@ export function totalDurationSec(w: Workout): number {
     case "fortime": return w.capSec;
     case "amrap":   return w.durationSec;
     case "emom":    return w.intervalSec * w.rounds;
+  }
+}
+
+// display helpers
+
+export const MODE_NAME: Record<Mode, string> = {
+  fortime: "For Time",
+  amrap: "AMRAP",
+  emom: "EMOM",
+};
+
+// "Time cap 20:00" · "12:00" · "10 × 01:00"
+export function describeWorkout(w: Workout): string {
+  switch (w.mode) {
+    case "fortime":
+      return `Time cap ${formatTime(w.capSec)}`;
+    case "amrap":
+      return formatTime(w.durationSec);
+    case "emom":
+      return `${w.rounds} × ${formatTime(w.intervalSec)}`;
   }
 }

@@ -5,8 +5,7 @@ import TimerDisplay from "@/components/TimerDisplay";
 import { useTimer } from "@/hooks/useTimer";
 import { useWakeLock } from "@/hooks/useWakeLock";
 import { beepLong, isAudioRunning, unlockAudio } from "@/lib/sound";
-import { formatTime } from "@/lib/timeline";
-import { decodeWorkout, type Workout } from "@/lib/workout";
+import { decodeWorkout, describeWorkout, MODE_NAME, type Workout } from "@/lib/workout";
 
 function subscribeToHash(onChange: () => void) {
   window.addEventListener("hashchange", onChange);
@@ -14,23 +13,6 @@ function subscribeToHash(onChange: () => void) {
 }
 const getHash = () => window.location.hash.slice(1);
 const getServerHash = () => null;
-
-const MODE_NAME: Record<Workout["mode"], string> = {
-  fortime: "For Time",
-  amrap: "AMRAP",
-  emom: "EMOM",
-};
-
-function describe(w: Workout): string {
-  switch (w.mode) {
-    case "fortime":
-      return `Time cap ${formatTime(w.capSec)}`;
-    case "amrap":
-      return `${formatTime(w.durationSec)}`;
-    case "emom":
-      return `${w.rounds} × ${formatTime(w.intervalSec)}`;
-  }
-}
 
 async function enterFullscreen() {
   const el = document.documentElement;
@@ -117,7 +99,7 @@ function TimerScreen({ workout }: { workout: Workout }) {
         <p className="start-mode">{MODE_NAME[workout.mode]}</p>
         {workout.title && <h1 className="start-title">{workout.title}</h1>}
         <p className="start-summary">
-          {describe(workout)}
+          {describeWorkout(workout)}
           <br />
           {workout.prepSec > 0 ? `${workout.prepSec} s countdown` : "No countdown"}
         </p>

@@ -415,3 +415,81 @@ fieldset.field {
   font-variant-numeric: tabular-nums;
   color: #aaa;
 }
+
+.share {
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+  text-align: center;
+}
+
+.share h2 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.qr-card {
+  padding: 16px;
+  line-height: 0; /* quita el espacio extra bajo el SVG */
+  background: #fff;
+  border-radius: 16px;
+}
+
+.qr-placeholder {
+  display: grid;
+  place-content: center;
+  width: 288px; /* 256 del QR + 2 × 16 de padding */
+  height: 288px;
+  padding: 24px;
+  color: #888;
+  border: 2px dashed #444;
+  border-radius: 16px;
+}
+
+.share-summary {
+  margin: 0;
+  font-size: 1.1rem;
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
+}
+
+.share-help {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #888;
+}
+
+.share-link {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  max-width: 360px;
+}
+
+.share-link input {
+  flex: 1;
+  min-width: 0;
+  min-height: 40px;
+  padding: 0 10px;
+  font-size: 0.85rem;
+  color: #aaa;
+  background: #1a1a1a;
+  border: 1px solid #444;
+  border-radius: 10px;
+}
+
+.share-link button {
+  min-height: 40px;
+  padding: 0 14px;
+  font-weight: 700;
+  white-space: nowrap;
+  color: #000;
+  background: #fff;
+  border: 0;
+  border-radius: 10px;
+}
+
+.share-open {
+  font-size: 0.95rem;
+  color: #4da3ff;
+}
