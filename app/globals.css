@@ -37,6 +37,7 @@ button:active {
   position: fixed;
   inset: 0;
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   grid-template-rows: auto 1fr auto;
   background: var(--bg);
   color: var(--fg);
