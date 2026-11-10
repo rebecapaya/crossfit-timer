@@ -235,7 +235,8 @@ button:active {
 }
 
 .timer-nolock {
-  position: absolute;
+  position: fixed;
+  z-index: 1;
   top: max(8px, env(safe-area-inset-top));
   right: max(8px, env(safe-area-inset-right));
   width: 10px;
