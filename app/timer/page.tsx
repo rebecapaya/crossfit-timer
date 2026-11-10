@@ -1,10 +1,10 @@
 "use client";
 
-import { useMemo, useSyncExternalStore } from "react";
+import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import TimerDisplay from "@/components/TimerDisplay";
 import { useTimer } from "@/hooks/useTimer";
 import { useWakeLock } from "@/hooks/useWakeLock";
-import { beepLong, unlockAudio } from "@/lib/sound";
+import { beepLong, isAudioRunning, unlockAudio } from "@/lib/sound";
 import { formatTime } from "@/lib/timeline";
 import { decodeWorkout, type Workout } from "@/lib/workout";
 
@@ -38,7 +38,7 @@ async function enterFullscreen() {
   try {
     await el.requestFullscreen({ navigationUI: "hide" });
   } catch {
-    /* denied if we are still in full screen */
+    /* denied: continue without full screen */
   }
 }
 
@@ -46,7 +46,7 @@ function exitFullscreen() {
   if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
 }
 
-// page
+
 export default function TimerPage() {
   const hash = useSyncExternalStore(subscribeToHash, getHash, getServerHash);
   const workout = useMemo(() => (hash === null ? undefined : decodeWorkout(hash)), [hash]);
@@ -65,12 +65,35 @@ export default function TimerPage() {
   return <TimerScreen key={hash} workout={workout} />;
 }
 
-// temporatization screen
+
 function TimerScreen({ workout }: { workout: Workout }) {
   const { state, status, start, pause, resume, reset } = useTimer(workout);
   const { locked } = useWakeLock(status !== "idle");
+  const [soundOff, setSoundOff] = useState(false);
 
   const wakeLockSupported = "wakeLock" in navigator;
+
+  useEffect(() => {
+    if (status === "idle") return;
+    let timeoutId: number | undefined;
+
+    const onVisibilityChange = () => {
+      if (document.visibilityState !== "visible") return;
+      window.clearTimeout(timeoutId);
+      timeoutId = window.setTimeout(() => setSoundOff(!isAudioRunning()), 500);
+    };
+
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    return () => {
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+      window.clearTimeout(timeoutId);
+    };
+  }, [status]);
+
+  const handleAnyTap = () => {
+    if (!isAudioRunning()) unlockAudio();
+    setSoundOff(false);
+  };
 
   const handleStart = () => {
     unlockAudio();
@@ -123,7 +146,7 @@ function TimerScreen({ workout }: { workout: Workout }) {
   }
 
   return (
-    <>
+    <div onClickCapture={handleAnyTap}>
       <TimerDisplay
         workout={workout}
         state={state}
@@ -136,6 +159,7 @@ function TimerScreen({ workout }: { workout: Workout }) {
       {wakeLockSupported && !locked && (
         <span className="timer-nolock" aria-label="Screen may turn off" />
       )}
-    </>
+      {soundOff && <button className="sound-off">🔇 Tap to turn sound back on</button>}
+    </div>
   );
 }
