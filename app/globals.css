@@ -65,12 +65,15 @@ button:active {
 }
 
 .timer-title {
+  flex: 1 1 auto;
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .timer-round {
+  flex: none;
   font-size: min(10vw, 12vh);
   font-weight: 800;
   font-variant-numeric: tabular-nums;
