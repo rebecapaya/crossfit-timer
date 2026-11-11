@@ -1,3 +1,3 @@
-export function GET() {
-  return new Response("Not configured yet", { status: 501 });
-}
+import { handlers } from "@/auth";
+
+export const { GET, POST } = handlers;
