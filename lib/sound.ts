@@ -2,8 +2,7 @@ import type { Cue } from "./timeline";
 
 let ctx: AudioContext | null = null;
 
-const listeners = new Set<() => void>();
-const notify = () => listeners.forEach((listener) => listener());
+let stale = false;
 
 function getContext(): AudioContext | null {
   if (typeof window === "undefined") return null;
@@ -13,18 +12,16 @@ function getContext(): AudioContext | null {
       (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
     if (!Ctor) return null;
     ctx = new Ctor();
-    ctx.addEventListener("statechange", notify);
   }
   return ctx;
 }
 
-export function isAudioRunning(): boolean {
-  return ctx?.state === "running";
+export function markAudioStale(): void {
+  if (ctx) stale = true;
 }
 
-export function subscribeAudioState(onChange: () => void): () => void {
-  listeners.add(onChange);
-  return () => listeners.delete(onChange);
+export function needsAudioUnlock(): boolean {
+  return stale || (ctx !== null && ctx.state !== "running");
 }
 
 export function unlockAudio(): void {
@@ -39,17 +36,15 @@ export function unlockAudio(): void {
     }
   }
 
-  if (ctx && ctx.state !== "running") {
-    const old = ctx;
-    old.removeEventListener("statechange", notify);
-    void old.close().catch(() => {});
+  if (ctx && (stale || ctx.state !== "running")) {
+    void ctx.close().catch(() => {});
     ctx = null;
   }
+  stale = false;
 
   const audio = getContext();
   if (!audio) return;
   if (audio.state !== "running") void audio.resume();
-  notify();
 
   const buffer = audio.createBuffer(1, 1, 22050);
   const source = audio.createBufferSource();

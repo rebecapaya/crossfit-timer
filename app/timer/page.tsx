@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import TimerDisplay from "@/components/TimerDisplay";
 import { useTimer } from "@/hooks/useTimer";
 import { useWakeLock } from "@/hooks/useWakeLock";
-import { beepLong, isAudioRunning, unlockAudio } from "@/lib/sound";
+import { beepLong, beepShort, markAudioStale, needsAudioUnlock, unlockAudio } from "@/lib/sound";
 import { decodeWorkout, describeWorkout, MODE_NAME, type Workout } from "@/lib/workout";
 
 function subscribeToHash(onChange: () => void) {
@@ -28,7 +28,6 @@ function exitFullscreen() {
   if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
 }
 
-
 export default function TimerPage() {
   const hash = useSyncExternalStore(subscribeToHash, getHash, getServerHash);
   const workout = useMemo(() => (hash === null ? undefined : decodeWorkout(hash)), [hash]);
@@ -47,7 +46,6 @@ export default function TimerPage() {
   return <TimerScreen key={hash} workout={workout} />;
 }
 
-
 function TimerScreen({ workout }: { workout: Workout }) {
   const { state, status, start, pause, resume, reset } = useTimer(workout);
   const { locked } = useWakeLock(status !== "idle");
@@ -57,23 +55,31 @@ function TimerScreen({ workout }: { workout: Workout }) {
 
   useEffect(() => {
     if (status === "idle") return;
-    let timeoutId: number | undefined;
 
+    const onReturn = () => {
+      markAudioStale();
+      setSoundOff(true);
+    };
     const onVisibilityChange = () => {
-      if (document.visibilityState !== "visible") return;
-      window.clearTimeout(timeoutId);
-      timeoutId = window.setTimeout(() => setSoundOff(!isAudioRunning()), 500);
+      if (document.visibilityState === "visible") onReturn();
+    };
+    const onPageShow = (e: PageTransitionEvent) => {
+      if (e.persisted) onReturn();
     };
 
     document.addEventListener("visibilitychange", onVisibilityChange);
+    window.addEventListener("pageshow", onPageShow);
     return () => {
       document.removeEventListener("visibilitychange", onVisibilityChange);
-      window.clearTimeout(timeoutId);
+      window.removeEventListener("pageshow", onPageShow);
     };
   }, [status]);
 
   const handleAnyTap = () => {
-    if (!isAudioRunning()) unlockAudio();
+    if (needsAudioUnlock()) {
+      unlockAudio();
+      beepShort();
+    }
     setSoundOff(false);
   };
 
