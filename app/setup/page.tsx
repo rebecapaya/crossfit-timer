@@ -21,14 +21,14 @@ export default async function SetupPage() {
         </h1>
 
         <div className="setup-user">
-          <span>{session.user.email}</span>
+          <span className="setup-user-email">{session.user.email}</span>
           <form
             action={async () => {
               "use server";
               await signOut({ redirectTo: "/" });
             }}
           >
-            <button type="submit">Sign out</button>
+            <button type="submit" className="btn-signout">Sign out</button>
           </form>
         </div>
       </header>

@@ -645,3 +645,44 @@ fieldset.field {
   font-size: 0.85rem;
   color: #777;
 }
+
+.setup-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.setup-user-email {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.9rem;
+  color: #888;
+}
+
+.setup-user form {
+  margin: 0;
+}
+
+.btn-signout {
+  min-height: 36px;
+  padding: 0 14px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  white-space: nowrap;
+  color: #ddd;
+  background: transparent;
+  border: 1px solid #444;
+  border-radius: 999px;
+}
+
+.btn-signout:hover {
+  border-color: #888;
+}
+
+@media (max-width: 520px) {
+  .setup-user-email {
+    display: none; /* on small screens, keep only the button */
+  }
+}
