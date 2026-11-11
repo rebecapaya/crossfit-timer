@@ -553,3 +553,19 @@ fieldset.field {
     position: static;
   }
 }
+
+.privacy {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 48px 24px;
+  line-height: 1.6;
+}
+
+.privacy h2 {
+  margin-top: 32px;
+  font-size: 1.2rem;
+}
+
+.privacy p {
+  color: #ccc;
+}
